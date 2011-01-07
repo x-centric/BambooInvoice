@@ -51,8 +51,27 @@ rest of the itemized items. -->
 				</label>
 				</p>
 			</td>
+<?php // PATCH tax-system per item
+/* old code: 
 			<td><p><label><input type="checkbox" name="items[1][taxable]" value="1" onclick="recalculate_items();" <?php if ($row->tax_status) {echo 'checked="checked" ';}?>/><span><?php echo $this->lang->line('invoice_taxable');?>?</span></label></p></td>
+// end old code /**/
+// new code: ?>
+			<td>
+				<input type="hidden" name="items[1][taxable]" value="1"/>
+				<select id="items[1][tax]" name="items[1][tax]" onchange="recalculate_items();">
+					<?php if ($tax1_rate>0) { ?>
+					<option value="tax1" <?php if ($tax1_def) { echo 'selected="selected"'; }?>><?php echo $tax1_desc;?></option>
+					<?php } ?>
+					<?php if ($tax2_rate>0) { ?>
+					<option value="tax2" <?php if ($tax2_def) { echo 'selected="selected"'; }?>><?php echo $tax2_desc;?></option>
+					<?php } ?>
+					<option value="tax0" <?php if ($tax0_def) { echo 'selected="selected"'; }?>><?php echo $this->lang->line('invoice_tax0_desc');?></option>
+				</select>
+			</td>
+<?php // end new code;
+// END PATCH ?>
 			<td nowrap="nowrap"><p><label><span><?php echo $this->lang->line('invoice_amount');?></span><?php echo $this->settings_model->get_setting('currency_symbol');?><input type="text" id="amount" name="items[1][amount]" size="5" value="0.00" onkeyup="recalculate_items();" value="" /></label></p></td>
+
 			<td>&nbsp;</td>
 		</tr>
 		</tbody>

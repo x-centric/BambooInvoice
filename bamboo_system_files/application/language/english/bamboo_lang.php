@@ -143,6 +143,11 @@ $lang['invoice_tax1_description'] = 'Name of tax charged';
 $lang['invoice_tax1_rate'] = 'Rate of tax1';
 $lang['invoice_tax2_description'] = 'Name of second tax';
 $lang['invoice_tax2_rate'] = 'Rate of tax2';
+// PATCH tax-system per invoice
+// new code:
+$lang['invoice_tax0_desc'] = 'No tax';
+// end new code;
+// END PATCH
 $lang['invoice_tax_exempt'] = 'Note: This client is tax exempt';
 $lang['invoice_tax_status'] = 'Tax Status';
 $lang['invoice_taxable'] = 'Taxable';

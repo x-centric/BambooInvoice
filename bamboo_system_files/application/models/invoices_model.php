@@ -95,9 +95,18 @@ class invoices_model extends Model {
 		$this->db->select('(SELECT SUM('.$this->db->dbprefix('invoice_payments').'.amount_paid) FROM '.$this->db->dbprefix('invoice_payments').' WHERE '.$this->db->dbprefix('invoice_payments').'.invoice_id=' . $invoice_id . ') AS amount_paid', FALSE); 
 		$this->db->select('TO_DAYS('.$this->db->dbprefix('invoices').'.dateIssued) - TO_DAYS(curdate()) AS daysOverdue', FALSE);
 		$this->db->select('(SELECT SUM('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity) FROM '.$this->db->dbprefix('invoice_items').' WHERE '.$this->db->dbprefix('invoice_items').'.invoice_id=' . $invoice_id . ') AS total_notax', FALSE);
+// PATCH tax-system per invoice
+/* old code:
 		$this->db->select('(SELECT SUM('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity * ('.$this->db->dbprefix('invoices').'.tax1_rate/100 * '.$this->db->dbprefix('invoice_items').'.taxable)) FROM '.$this->db->dbprefix('invoice_items').' WHERE '.$this->db->dbprefix('invoice_items').'.invoice_id=' . $invoice_id . ') AS total_tax1', FALSE);
 		$this->db->select('(SELECT SUM('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity * ('.$this->db->dbprefix('invoices').'.tax2_rate/100 * '.$this->db->dbprefix('invoice_items').'.taxable)) FROM '.$this->db->dbprefix('invoice_items').' WHERE '.$this->db->dbprefix('invoice_items').'.invoice_id=' . $invoice_id . ') AS total_tax2', FALSE);
 		$this->db->select('(SELECT SUM('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity + ROUND(('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity * ('.$this->db->dbprefix('invoices').'.tax1_rate/100 + '.$this->db->dbprefix('invoices').'.tax2_rate/100) * '.$this->db->dbprefix('invoice_items').'.taxable), 2)) FROM '.$this->db->dbprefix('invoice_items').' WHERE '.$this->db->dbprefix('invoice_items').'.invoice_id=' . $invoice_id . ') AS total_with_tax', FALSE);
+// end old code; /**/
+// new code:
+		$this->db->select('(SELECT SUM('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity * ('.$this->db->dbprefix('invoices').'.tax1_rate/100 * '.$this->db->dbprefix('invoice_items').'.taxable * '.$this->db->dbprefix('invoice_items').'.tax1)) FROM '.$this->db->dbprefix('invoice_items').' WHERE '.$this->db->dbprefix('invoice_items').'.invoice_id=' . $invoice_id . ') AS total_tax1', FALSE);
+		$this->db->select('(SELECT SUM('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity * ('.$this->db->dbprefix('invoices').'.tax2_rate/100 * '.$this->db->dbprefix('invoice_items').'.taxable * '.$this->db->dbprefix('invoice_items').'.tax2)) FROM '.$this->db->dbprefix('invoice_items').' WHERE '.$this->db->dbprefix('invoice_items').'.invoice_id=' . $invoice_id . ') AS total_tax2', FALSE);
+		$this->db->select('(SELECT SUM('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity + ROUND(('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity * ('.$this->db->dbprefix('invoices').'.tax1_rate/100) * '.$this->db->dbprefix('invoice_items').'.taxable * '.$this->db->dbprefix('invoice_items').'.tax1), 2) + ROUND(('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity * ('.$this->db->dbprefix('invoices').'.tax2_rate/100) * '.$this->db->dbprefix('invoice_items').'.taxable * '.$this->db->dbprefix('invoice_items').'.tax2), 2)) FROM '.$this->db->dbprefix('invoice_items').' WHERE '.$this->db->dbprefix('invoice_items').'.invoice_id=' . $invoice_id . ') AS total_with_tax', FALSE);
+// end new code;
+// END PATCH
 
 		$this->db->join('clients', 'invoices.client_id = clients.id');
 		$this->db->join('invoice_items', 'invoices.id = invoice_items.invoice_id', 'left');
@@ -221,7 +230,14 @@ class invoices_model extends Model {
 		$this->db->select('invoices.*, clients.name');
 		$this->db->select('(SELECT SUM(amount_paid) FROM '.$this->db->dbprefix('invoice_payments').' WHERE invoice_id='.$this->db->dbprefix('invoices').'.id) AS amount_paid', FALSE); 
 		$this->db->select('TO_DAYS('.$this->db->dbprefix('invoices').'.dateIssued) - TO_DAYS(curdate()) AS daysOverdue', FALSE);
+// PATCH tax-system per invoice
+/* old code:
 		$this->db->select('ROUND((SELECT SUM('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity + ('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity * ('.$this->db->dbprefix('invoices').'.tax1_rate/100 + '.$this->db->dbprefix('invoices').'.tax2_rate/100) * '.$this->db->dbprefix('invoice_items').'.taxable)) FROM '.$this->db->dbprefix('invoice_items').' WHERE '.$this->db->dbprefix('invoice_items').'.invoice_id='.$this->db->dbprefix('invoices').'.id), 2) AS subtotal', FALSE);
+// end old code /**/
+// new code:
+		$this->db->select('ROUND((SELECT SUM('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity + ('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity * ('.$this->db->dbprefix('invoices').'.tax1_rate/100) * '.$this->db->dbprefix('invoice_items').'.taxable * '.$this->db->dbprefix('invoice_items').'.tax1) + ('.$this->db->dbprefix('invoice_items').'.amount * '.$this->db->dbprefix('invoice_items').'.quantity * ('.$this->db->dbprefix('invoices').'.tax2_rate/100) * '.$this->db->dbprefix('invoice_items').'.taxable * '.$this->db->dbprefix('invoice_items').'.tax2)) FROM '.$this->db->dbprefix('invoice_items').' WHERE '.$this->db->dbprefix('invoice_items').'.invoice_id='.$this->db->dbprefix('invoices').'.id), 2) AS subtotal', FALSE);
+// end new code;
+// END PATCH
 
 		$this->db->join('clients', 'invoices.client_id = clients.id');
 		$this->db->join('invoice_items', 'invoices.id = invoice_items.invoice_id', 'left');

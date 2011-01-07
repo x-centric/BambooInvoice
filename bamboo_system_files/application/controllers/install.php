@@ -444,6 +444,29 @@ class Install extends Controller {
 			$updates .= "<li>Upgrade to 0.8.9 success.</li>";
 		}
 
+// PATCH: tax-system per item
+// new code:
+		// regrab data, for the new update
+		$version = $this->db->get('settings')->row()->bambooinvoice_version;
+
+		if ($version == '0.8.9')
+		{
+			// add tax-fields to invoice_items and settings
+			$field = array('tax1' => array('type' => 'INT', 'constraint' => '1', 'default' => 0));
+			$this->dbforge->add_column('invoice_items', $field);
+			$field = array('tax2' => array('type' => 'INT', 'constraint' => '1', 'default' => 0));
+			$this->dbforge->add_column('invoice_items', $field);
+			
+			$this->db->set('bambooinvoice_version', '0.8.9.1');
+			$this->db->where('id', 1);
+			$this->db->update('settings');
+
+			$updates .= "<li>Upgrade to 0.8.9.1 success.</li>";
+		}
+
+// end new code;
+// END PATCH
+
 		$updates .= '</ul>';
 
 		// everything's done now, let's optimize and then brag

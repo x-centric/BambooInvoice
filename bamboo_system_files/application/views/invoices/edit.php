@@ -61,7 +61,26 @@ $this->load->view('header');
 						</label>
 						</p>
 					</td>
+<?php // PATCH tax-system per item
+/* old code:
 					<td><p><label><input type="checkbox" name="items[<?php echo $item_count;?>][taxable]" value="1" onclick="recalculate_items();" <?php if ($item->taxable == 1) {echo 'checked="checked" ';}?>/><span><?php echo $this->lang->line('invoice_taxable');?>?</span></label></p></td>
+// end old code; /**/
+// new code: ?>
+					<td>
+						<input type="hidden" name="items[<?php echo $item_count;?>][taxable]" value="1"/>
+						<select id="items[<?php echo $item_count;?>][tax]" name="items[<?php echo $item_count;?>][tax]" onchange="recalculate_items();">
+							<?php if ($row->tax1_rate>0) { ?>
+							<option value="tax1" <?php if ($item->tax1) { echo 'selected="selected"'; }?>><?php echo $row->tax1_desc;?></option>
+							<?php } ?>
+							<?php if ($row->tax2_rate>0) { ?>
+							<option value="tax2" <?php if ($item->tax2) { echo 'selected="selected"'; }?>><?php echo $row->tax2_desc;?></option>
+							<?php } ?>
+							<option value="tax0" <?php if ($item->tax1 != 1 && $item->tax2 != 1) { echo 'selected="selected"'; }?>><?php echo $this->lang->line('invoice_tax0_desc');?></option>
+						</select>
+					</td>
+<?php // end new code;
+// END PATCH
+?>
 					<td nowrap="nowrap"><p><label><span><?php echo $this->lang->line('invoice_amount');?></span><?php echo $this->settings_model->get_setting('currency_symbol');?><input type="text" id="amount" name="items[<?php echo $item_count;?>][amount]" size="5" value="<?php echo $item->amount;?>" onkeyup="recalculate_items();" value="" /></label></p></td>
 					<td>
 					<?php if ($item_count > 1):?>

@@ -136,6 +136,11 @@ $lang['invoice_tax1_description'] = 'Naam van het type belasting';
 $lang['invoice_tax1_rate'] = 'Belastingtarief 1';
 $lang['invoice_tax2_description'] = 'Naam van het 2de type belasting';
 $lang['invoice_tax2_rate'] = 'Belastingtarief 2';
+// PATCH tax-system per invoice
+// new code:
+$lang['invoice_tax0_desc'] = 'Geen belasting';
+// end new code;
+// END PATCH
 $lang['invoice_tax_exempt'] = 'Let op: Deze klant is van belastingen vrijgesteld';
 $lang['invoice_tax_status'] = 'Belasting status';
 $lang['invoice_taxable'] = 'Belastbaar';

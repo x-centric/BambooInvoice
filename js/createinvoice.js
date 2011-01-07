@@ -33,6 +33,21 @@ function insert_date(cal) {
 	$("amount").focus();
 }
 
+function attributeSet(elem, attrb, setting)
+{
+	if(attrb.toLowerCase()=='class' || attrb.toLowerCase()=='classname')
+	{
+		elem.className=setting;
+		return;
+	}
+	var elemAttrb = elem.getAttributeNode(attrb);
+	if (elemAttrb)
+	{
+		elemAttrb.value=setting;
+	} else {
+		elem.setAttribute(attrb, setting);
+	}
+}
 
 function create_itemized_fields()
 {
@@ -79,27 +94,73 @@ function create_itemized_fields()
 	var p = document.createElement('p');
 	var label = document.createElement('label');
 	var span = document.createElement('span');
-	var theData = document.createTextNode(lang_taxable);
+//	var theData = document.createTextNode(lang_taxable);
 	var theInput = document.createElement('input');
-	theInput.setAttribute('type', 'checkbox');
+//	theInput.setAttribute('type', 'checkbox');
+	theInput.setAttribute('type', 'hidden');
 	theInput.setAttribute('name', 'items['+item_count+'][taxable]');
 
 	if (taxable)
 	{
-		theInput.setAttribute('checked', 'checked');
+//		theInput.setAttribute('checked', 'checked');
+		theInput.setAttribute('value', '1');
 	}
 	else
 	{
-		theInput.checked = false;
+//		theInput.checked = false;
+		theInput.setAttribute('value', '1');
 	}
 
-	theInput.setAttribute('value', '1');
-	theInput.setAttribute('onclick', 'recalculate_items();');
-	span.appendChild(theData);
+//	theInput.setAttribute('value', '1');
+//	theInput.setAttribute('onclick', 'recalculate_items();');
+//	span.appendChild(theData);
 	label.appendChild(span);
 	label.appendChild(theInput);
 	p.appendChild(label);
 	td.appendChild(p);
+
+	var theSelect = document.createElement('select');
+	attributeSet(theSelect, 'name', 'items['+item_count+'][tax]');
+	attributeSet(theSelect, 'id', 'items['+item_count+'][tax]');
+	attributeSet(theSelect, 'onchange', 'recalculate_items();');
+	
+	if (tax1_rate > 0)
+	{
+		var theOption = document.createElement('option');
+		var theData = document.createTextNode(tax1_descr);
+		theOption.appendChild(theData);
+		attributeSet(theOption, 'value', 'tax1');
+		if (tax1_default == 1)
+		{
+			attributeSet(theOption, 'selected', 'selected');
+		}
+		theSelect.appendChild(theOption);
+	}
+	if (tax2_rate > 0)
+	{
+		var theOption = document.createElement('option');
+		var theData = document.createTextNode(tax2_descr);
+		theOption.appendChild(theData);
+		attributeSet(theOption, 'value', 'tax2');
+		if (tax2_default == 1)
+		{
+			attributeSet(theOption, 'selected', 'selected');
+		}
+		theSelect.appendChild(theOption);
+	}
+
+	var theOption = document.createElement('option');
+	var theData = document.createTextNode(tax0_descr);
+	theOption.appendChild(theData);
+	attributeSet(theOption, 'value', 'tax0');
+	if (tax1_default == 0 && tax2_default == 0)
+	{
+		attributeSet(theOption, 'selected', 'selected');
+	}
+	theSelect.appendChild(theOption);
+
+	td.appendChild(theSelect);
+
 	row.appendChild(td);
 
 	var td = document.createElement('td');

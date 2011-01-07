@@ -35,8 +35,8 @@ $active_group = 'default';
 
 $db['default']['hostname'] = 'localhost';
 $db['default']['username'] = 'root';
-$db['default']['password'] = 'root';
-$db['default']['database'] = 'bambooinvoice';
+$db['default']['password'] = 'test';
+$db['default']['database'] = 'bifork';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = 'bamboo_';
 $db['default']['active_r'] = TRUE;

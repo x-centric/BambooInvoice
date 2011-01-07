@@ -142,10 +142,24 @@ class Invoices extends MY_Controller {
 		foreach ($items as $item)
 		{
 			$taxable = (isset($item['taxable']) && $item['taxable'] == 1) ? 1 : 0;
+// PATCH tax-system per item
+/* old code:
 			$sub_amount = $item['quantity'] * $item['amount'];
 			$amount += $sub_amount;
 			$tax1_amount += $sub_amount * (($tax1_rate)/100) * $taxable;
 			$tax2_amount += $sub_amount * (($tax2_rate)/100) * $taxable;
+// end old code; /**/
+// new code:
+			$tax1 = (isset($item['tax']) && $item['tax'] == 'tax1') ? 1 : 0;
+			$tax2 = (isset($item['tax']) && $item['tax'] == 'tax2') ? 1 : 0;
+
+			$sub_amount = $item['quantity'] * $item['amount'];
+			$amount += $sub_amount;
+
+			$tax1_amount += $sub_amount * (($tax1_rate)/100) * $tax1 * $taxable;
+			$tax2_amount += $sub_amount * (($tax2_rate)/100) * $tax2 * $taxable;
+// end new code;
+// END PATCH
 		}
 
 		echo '{"amount" : "'.number_format($amount, 2, $this->config->item('currency_decimal'), '').'", "tax1_amount" : "'.number_format($tax1_amount, 2, $this->config->item('currency_decimal'), '').'", "tax2_amount" : "'.number_format($tax2_amount, 2, $this->config->item('currency_decimal'), '').'", "total_amount" : "'.number_format($amount + $tax1_amount+$tax2_amount, 2, $this->config->item('currency_decimal'), '').'"}';
@@ -178,6 +192,14 @@ class Invoices extends MY_Controller {
 		$data['tax2_rate'] = $this->settings_model->get_setting('tax2_rate');
 		$data['invoice_note_default'] = $this->settings_model->get_setting('invoice_note_default');
 
+// PATCH tax-system per item
+// new code:
+		$data['tax1_def']  = 1;
+		$data['tax2_def']  = 0;
+		$data['tax0_def']  = 0;
+// end new code;
+// END PATCH
+
 		$last_invoice_number = $this->invoices_model->lastInvoiceNumber($id);
 		($last_invoice_number != '') ? $data['lastInvoiceNumber'] = $last_invoice_number : $data['lastInvoiceNumber'] = '';
 		$data['suggested_invoice_number'] = (is_numeric($last_invoice_number)) ? $last_invoice_number+1 : '';
@@ -186,7 +208,14 @@ class Invoices extends MY_Controller {
 
 		$data['extraHeadContent'] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"". base_url()."css/calendar.css\" />\n";
 		$data['extraHeadContent'] .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"". base_url()."css/invoice.css\" />\n";
+// PATCH tax-system per item
+/* old code:
 		$data['extraHeadContent'] .= "<script type=\"text/javascript\">\nvar taxable = ".$taxable.";\nvar tax1_rate = ". $data['tax1_rate'] .";\nvar tax2_rate = ". $data['tax2_rate'] .";\nvar datePicker1 = \"".date("Y-m-d")."\";\nvar datePicker2 = \"".date("F j, Y")."\";\n</script>\n";
+// end old code; /**/
+// new code:
+		$data['extraHeadContent'] .= "<script type=\"text/javascript\">\nvar taxable = ".$taxable.";\nvar tax1_rate = ". $data['tax1_rate'] .";\nvar tax2_rate = ". $data['tax2_rate'] .";\nvar datePicker1 = \"".date("Y-m-d")."\";\nvar datePicker2 = \"".date("F j, Y")."\";\nvar tax1_default = ".$data['tax1_def'].";\nvar tax2_default = ".$data['tax2_def'].";\nvar tax1_descr = '".$data['tax1_desc']."';\nvar tax2_descr = '".$data['tax2_desc']."';\nvar tax0_descr = '".$this->lang->line('invoice_tax0_desc')."';\n</script>\n";
+// end new code;
+// END PATCH
 		$data['extraHeadContent'] .= "<script type=\"text/javascript\" src=\"". base_url()."js/createinvoice.js\"></script>\n";
 		$data['extraHeadContent'] .= js_calendar_script('my_form');
 
@@ -224,12 +253,25 @@ class Invoices extends MY_Controller {
 				foreach ($items as $item)
 				{
 					$taxable = (isset($item['taxable']) && $item['taxable'] == 1) ? 1 : 0;
+// PATCH tax-system per item
+// new code:
+					$tax1 = (isset($item['tax']) && $item['tax'] == 'tax1') ? 1 : 0;
+					$tax2 = (isset($item['tax']) && $item['tax'] == 'tax2') ? 1 : 0;
+// end new code;
+// END PATCH
+
 
 					$invoice_items = array(
 											'invoice_id' 		=> $invoice_id,
 											'quantity' 			=> $item['quantity'],
 											'amount' 			=> $item['amount'],
 											'work_description' 	=> $item['work_description'],
+// PATCH tax-system per item
+// new code:
+											'tax1' 				=> $tax1,
+											'tax2' 				=> $tax2,
+// end new code;
+// END PATCH
 											'taxable' 			=> $taxable
 										);
 
@@ -358,7 +400,14 @@ class Invoices extends MY_Controller {
 		$taxable = ($this->clients_model->get_client_info($data['row']->client_id, 'tax_status')->tax_status == 1) ? 'true' : 'false';
 
 		$data['extraHeadContent'] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"". base_url()."css/calendar.css\" />\n";
+// PATCH tax-system per item
+/* old code:
 		$data['extraHeadContent'] .= "<script type=\"text/javascript\">\nvar taxable = ".$taxable.";\nvar tax1_rate = ". $data['row']->tax1_rate .";\nvar tax2_rate = ". $data['row']->tax2_rate .";\nvar datePicker1 = \"".date("Y-m-d", mysql_to_unix($data['row']->dateIssued))."\";\nvar datePicker2 = \"".date("F j, Y", mysql_to_unix($data['row']->dateIssued))."\";\n\n</script>";
+// end old code; /**/
+// new code:
+		$data['extraHeadContent'] .= "<script type=\"text/javascript\">\nvar taxable = ".$taxable.";\nvar tax1_rate = ". $data['row']->tax1_rate .";\nvar tax2_rate = ". $data['row']->tax2_rate .";\nvar datePicker1 = \"".date("Y-m-d", mysql_to_unix($data['row']->dateIssued))."\";\nvar datePicker2 = \"".date("F j, Y", mysql_to_unix($data['row']->dateIssued))."\";\nvar tax1_default = ".$this->settings_model->get_setting('tax1_default') .";\nvar tax2_default = ".$this->settings_model->get_setting('tax2_default').";\nvar tax1_descr = '".$data['row']->tax1_desc."';\nvar tax2_descr = '".$data['row']->tax2_desc."';\nvar tax0_descr = '".$this->lang->line('invoice_tax0_desc')."';\n\n</script>";
+// end new code;
+// END PATCH
 		$data['extraHeadContent'] .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"". base_url()."css/invoice.css\" />\n";
 		$data['extraHeadContent'] .= "<script type=\"text/javascript\" src=\"". base_url()."js/createinvoice.js\"></script>\n";
 		$data['extraHeadContent'] .= js_calendar_script('my_form');
@@ -410,12 +459,24 @@ class Invoices extends MY_Controller {
 				foreach ($items as $item)
 				{
 					$taxable = (isset($item['taxable']) && $item['taxable'] == 1) ? 1 : 0;
+// PATCH tax-system per item
+// new code:
+					$tax1 = (isset($item['tax']) && $item['tax'] == 'tax1') ? 1 : 0;
+					$tax2 = (isset($item['tax']) && $item['tax'] == 'tax2') ? 1 : 0;
+// end new code;
+// END PATCH
 
 					$invoice_items = array(
 											'invoice_id' 		=> $invoice_id,
 											'quantity' 			=> $item['quantity'],
 											'amount' 			=> $item['amount'],
 											'work_description' 	=> $item['work_description'],
+// PATCH tax-system per item
+// new code:
+											'tax1' 				=> $tax1,
+											'tax2' 				=> $tax2,
+// end new code;
+// END PATCH
 											'taxable' 			=> $taxable
 										);
 
@@ -466,7 +527,14 @@ class Invoices extends MY_Controller {
 		$taxable = ($this->clients_model->get_client_info($data['row']->client_id, 'tax_status')->tax_status == 1) ? 'true' : 'false';
 
 		$data['extraHeadContent'] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"". base_url()."css/calendar.css\" />\n";
+// PATCH tax-system per item
+/* old code:
 		$data['extraHeadContent'] .= "<script type=\"text/javascript\">\nvar taxable = ".$taxable.";\nvar tax1_rate = ". $data['row']->tax1_rate .";\nvar tax2_rate = ". $data['row']->tax2_rate .";\nvar datePicker1 = \"".date("Y-m-d", mysql_to_unix($data['row']->dateIssued))."\";\nvar datePicker2 = \"".date("F j, Y", mysql_to_unix($data['row']->dateIssued))."\";\n\n</script>";
+// end old code; /**/
+// new code:
+		$data['extraHeadContent'] .= "<script type=\"text/javascript\">\nvar taxable = ".$taxable.";\nvar tax1_rate = ". $data['row']->tax1_rate .";\nvar tax2_rate = ". $data['row']->tax2_rate .";\nvar datePicker1 = \"".date("Y-m-d", mysql_to_unix($data['row']->dateIssued))."\";\nvar datePicker2 = \"".date("F j, Y", mysql_to_unix($data['row']->dateIssued))."\";\nvar tax1_default = ".$this->settings_model->get_setting('tax1_default') .";\nvar tax2_default = ".$this->settings_model->get_setting('tax2_default').";\nvar tax1_descr = '".$data['row']->tax1_desc."';\nvar tax2_descr = '".$data['row']->tax2_desc."';\nvar tax0_descr = '".$this->lang->line('invoice_tax0_desc')."';\n\n</script>";
+// end new code;
+// END PATCH
 		$data['extraHeadContent'] .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"". base_url()."css/invoice.css\" />\n";
 		$data['extraHeadContent'] .= "<script type=\"text/javascript\" src=\"". base_url()."js/createinvoice.js\"></script>\n";
 		$data['extraHeadContent'] .= js_calendar_script('my_form');
@@ -519,12 +587,24 @@ class Invoices extends MY_Controller {
 					foreach ($items as $item)
 					{
 						$taxable = (isset($item['taxable']) && $item['taxable'] == 1) ? 1 : 0;
+// PATCH tax-system per item
+// new code:
+						$tax1 = (isset($item['tax']) && $item['tax'] == 'tax1') ? 1 : 0;
+						$tax2 = (isset($item['tax']) && $item['tax'] == 'tax2') ? 1 : 0;
+// end new code;
+// END PATCH
 
 						$invoice_items = array(
 												'invoice_id' => htmlspecialchars($invoice_id),
 												'quantity' => htmlspecialchars($item['quantity']),
 												'amount' => htmlspecialchars($item['amount']),
 												'work_description' => htmlspecialchars($item['work_description']),
+// PATCH tax-system per item
+// new code:
+												'tax1' 				=> htmlspecialchars($tax1),
+												'tax2' 				=> htmlspecialchars($tax2),
+// end new code;
+// END PATCH
 												'taxable' => htmlspecialchars($taxable)
 											);
 

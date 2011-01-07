@@ -5,8 +5,16 @@ class reports_model extends Model {
 	{
 		$this->db->select('name');
 		$this->db->select_sum('amount * quantity', 'amount', FALSE);
+// PATCH tax-system per invoice
+/* old code:
 		$this->db->select('SUM('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoices').'.tax1_rate/100 * '.$this->db->dbprefix('invoice_items').'.quantity) as tax1_collected', FALSE);
 		$this->db->select('SUM('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoices').'.tax2_rate/100 * '.$this->db->dbprefix('invoice_items').'.quantity) as tax2_collected', FALSE);
+// end old code; /**/
+// new code:
+		$this->db->select('SUM('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoices').'.tax1_rate/100 * '.$this->db->dbprefix('invoice_items').'.tax1 * '.$this->db->dbprefix('invoice_items').'.quantity) as tax1_collected', FALSE);
+		$this->db->select('SUM('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoices').'.tax2_rate/100 * '.$this->db->dbprefix('invoice_items').'.tax2 * '.$this->db->dbprefix('invoice_items').'.quantity) as tax2_collected', FALSE);
+// end new code;
+// END PATCH
 		$this->db->join('invoices', 'invoices.client_id = clients.id');
 		$this->db->join('invoice_items', 'invoices.id = invoice_items.invoice_id');
 		$this->db->where('dateIssued >= "' . $start_date . '" and dateIssued <= "' . $end_date . '"');
@@ -21,8 +29,16 @@ class reports_model extends Model {
 	function getSummaryData($start_date, $end_date)
 	{
 		$this->db->select_sum('amount * quantity', 'amount');
+// PATCH tax-system per invoice
+/* old code:
 		$this->db->select('SUM(('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoice_items').'.quantity)*'.$this->db->dbprefix('invoices').'.tax1_rate/100) AS tax1_collected', FALSE);
 		$this->db->select('SUM(('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoice_items').'.quantity)*'.$this->db->dbprefix('invoices').'.tax2_rate/100) AS tax2_collected', FALSE);
+// end old code; /**/
+// new code:
+		$this->db->select('SUM(('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoice_items').'.quantity)*'.$this->db->dbprefix('invoices').'.tax1_rate/100 * '.$this->db->dbprefix('invoices').'.tax1) AS tax1_collected', FALSE);
+		$this->db->select('SUM(('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoice_items').'.quantity)*'.$this->db->dbprefix('invoices').'.tax2_rate/100 * '.$this->db->dbprefix('invoices').'.tax2) AS tax2_collected', FALSE);
+// end new code;
+// END PATCH
 		$this->db->join('invoices', 'invoices.client_id = clients.id');
 		$this->db->join('invoice_items', 'invoices.id = invoice_items.invoice_id');
 		$this->db->where('dateIssued >= ', $start_date);
