@@ -35,8 +35,8 @@ class reports_model extends Model {
 		$this->db->select('SUM(('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoice_items').'.quantity)*'.$this->db->dbprefix('invoices').'.tax2_rate/100) AS tax2_collected', FALSE);
 // end old code; /**/
 // new code:
-		$this->db->select('SUM(('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoice_items').'.quantity)*'.$this->db->dbprefix('invoices').'.tax1_rate/100 * '.$this->db->dbprefix('invoices').'.tax1) AS tax1_collected', FALSE);
-		$this->db->select('SUM(('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoice_items').'.quantity)*'.$this->db->dbprefix('invoices').'.tax2_rate/100 * '.$this->db->dbprefix('invoices').'.tax2) AS tax2_collected', FALSE);
+		$this->db->select('SUM(('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoice_items').'.quantity)*'.$this->db->dbprefix('invoices').'.tax1_rate/100) AS tax1_collected', FALSE);
+		$this->db->select('SUM(('.$this->db->dbprefix('invoice_items').'.amount*'.$this->db->dbprefix('invoice_items').'.quantity)*'.$this->db->dbprefix('invoices').'.tax2_rate/100) AS tax2_collected', FALSE);
 // end new code;
 // END PATCH
 		$this->db->join('invoices', 'invoices.client_id = clients.id');

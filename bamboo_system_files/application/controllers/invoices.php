@@ -397,6 +397,13 @@ class Invoices extends MY_Controller {
 										'tax2_description'	=> $data['row']->tax2_desc,
 									);
 
+// PATCH tax-system per item
+// new code:
+		$data['tax1_def']  = 1;
+		$data['tax2_def']  = 0;
+		$data['tax0_def']  = 0;
+// end new code;
+// END PATCH
 		$taxable = ($this->clients_model->get_client_info($data['row']->client_id, 'tax_status')->tax_status == 1) ? 'true' : 'false';
 
 		$data['extraHeadContent'] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"". base_url()."css/calendar.css\" />\n";
@@ -405,7 +412,7 @@ class Invoices extends MY_Controller {
 		$data['extraHeadContent'] .= "<script type=\"text/javascript\">\nvar taxable = ".$taxable.";\nvar tax1_rate = ". $data['row']->tax1_rate .";\nvar tax2_rate = ". $data['row']->tax2_rate .";\nvar datePicker1 = \"".date("Y-m-d", mysql_to_unix($data['row']->dateIssued))."\";\nvar datePicker2 = \"".date("F j, Y", mysql_to_unix($data['row']->dateIssued))."\";\n\n</script>";
 // end old code; /**/
 // new code:
-		$data['extraHeadContent'] .= "<script type=\"text/javascript\">\nvar taxable = ".$taxable.";\nvar tax1_rate = ". $data['row']->tax1_rate .";\nvar tax2_rate = ". $data['row']->tax2_rate .";\nvar datePicker1 = \"".date("Y-m-d", mysql_to_unix($data['row']->dateIssued))."\";\nvar datePicker2 = \"".date("F j, Y", mysql_to_unix($data['row']->dateIssued))."\";\nvar tax1_default = ".$this->settings_model->get_setting('tax1_default') .";\nvar tax2_default = ".$this->settings_model->get_setting('tax2_default').";\nvar tax1_descr = '".$data['row']->tax1_desc."';\nvar tax2_descr = '".$data['row']->tax2_desc."';\nvar tax0_descr = '".$this->lang->line('invoice_tax0_desc')."';\n\n</script>";
+		$data['extraHeadContent'] .= "<script type=\"text/javascript\">\nvar taxable = ".$taxable.";\nvar tax1_rate = ". $data['row']->tax1_rate .";\nvar tax2_rate = ". $data['row']->tax2_rate .";\nvar datePicker1 = \"".date("Y-m-d", mysql_to_unix($data['row']->dateIssued))."\";\nvar datePicker2 = \"".date("F j, Y", mysql_to_unix($data['row']->dateIssued))."\";\nvar tax1_default = ".$data['tax1_def']  .";\nvar tax2_default = ".$data['tax2_def']  .";\nvar tax1_descr = '".$data['row']->tax1_desc."';\nvar tax2_descr = '".$data['row']->tax2_desc."';\nvar tax0_descr = '".$this->lang->line('invoice_tax0_desc')."';\n\n</script>";
 // end new code;
 // END PATCH
 		$data['extraHeadContent'] .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"". base_url()."css/invoice.css\" />\n";
@@ -816,12 +823,12 @@ class Invoices extends MY_Controller {
 
 		$data['items'] = $this->invoices_model->getInvoiceItems($id);
 
-		$data['total_no_tax'] = $this->lang->line('invoice_amount').': '.$this->settings_model->get_setting('currency_symbol').number_format($data['row']->total_notax, 2, $this->config->item('currency_decimal'), '')."<br />\n";
+		$data['total_no_tax'] = $this->settings_model->get_setting('currency_symbol').number_format($data['row']->total_notax, 2, $this->config->item('currency_decimal'), '')."<br />\n";
 
 		// taxes
 		$data['tax_info'] = $this->_tax_info($data['row']);
 
-		$data['total_with_tax'] = $this->lang->line('invoice_total').': '.$this->settings_model->get_setting('currency_symbol').number_format($data['row']->total_with_tax, 2, $this->config->item('currency_decimal'), '')."<br />\n";;
+		$data['total_with_tax'] = $this->settings_model->get_setting('currency_symbol').number_format($data['row']->total_with_tax, 2, $this->config->item('currency_decimal'), '')."<br />\n";;
 
 		if ($data['row']->amount_paid > 0)
 		{
@@ -1033,12 +1040,12 @@ class Invoices extends MY_Controller {
 
 		if ($data->total_tax1 != 0)
 		{
-			$tax_info .= $data->tax1_desc." (".$data->tax1_rate."%): ".$this->settings_model->get_setting('currency_symbol').number_format($data->total_tax1, 2, $this->config->item('currency_decimal'), '')."<br />\n";
+			$tax_info .= $this->settings_model->get_setting('currency_symbol').number_format($data->total_tax1, 2, $this->config->item('currency_decimal'), '')."<br />\n";
 		}
 
 		if ($data->total_tax2 != 0)
 		{
-			$tax_info .= $data->tax2_desc." (".$data->tax2_rate."%): ".$this->settings_model->get_setting('currency_symbol').number_format($data->total_tax2, 2, $this->config->item('currency_decimal'), '')."<br />\n";
+			$tax_info .= $this->settings_model->get_setting('currency_symbol').number_format($data->total_tax2, 2, $this->config->item('currency_decimal'), '')."<br />\n";
 		}
 
 		return $tax_info;
