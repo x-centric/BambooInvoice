@@ -552,6 +552,13 @@ function String_Increment($string, $increment=1, $forbidden=array()) {
 										'tax2_rate'	=> $data['row']->tax2_rate,
 										'tax2_description'	=> $data['row']->tax2_desc,
 									);
+// PATCH tax-system per item
+// new code:
+		$data['tax1_def']  = 1;
+		$data['tax2_def']  = 0;
+		$data['tax0_def']  = 0;
+// end new code;
+// END PATCH
 
 		$taxable = ($this->clients_model->get_client_info($data['row']->client_id, 'tax_status')->tax_status == 1) ? 'true' : 'false';
 
@@ -561,9 +568,10 @@ function String_Increment($string, $increment=1, $forbidden=array()) {
 		$data['extraHeadContent'] .= "<script type=\"text/javascript\">\nvar taxable = ".$taxable.";\nvar tax1_rate = ". $data['row']->tax1_rate .";\nvar tax2_rate = ". $data['row']->tax2_rate .";\nvar datePicker1 = \"".date("Y-m-d", mysql_to_unix($data['row']->dateIssued))."\";\nvar datePicker2 = \"".date("F j, Y", mysql_to_unix($data['row']->dateIssued))."\";\n\n</script>";
 // end old code; /**/
 // new code:
-		$data['extraHeadContent'] .= "<script type=\"text/javascript\">\nvar taxable = ".$taxable.";\nvar tax1_rate = ". $data['row']->tax1_rate .";\nvar tax2_rate = ". $data['row']->tax2_rate .";\nvar datePicker1 = \"".date("Y-m-d", mysql_to_unix($data['row']->dateIssued))."\";\nvar datePicker2 = \"".date("F j, Y", mysql_to_unix($data['row']->dateIssued))."\";\nvar tax1_default = ".$this->settings_model->get_setting('tax1_default') .";\nvar tax2_default = ".$this->settings_model->get_setting('tax2_default').";\nvar tax1_descr = '".$data['row']->tax1_desc."';\nvar tax2_descr = '".$data['row']->tax2_desc."';\nvar tax0_descr = '".$this->lang->line('invoice_tax0_desc')."';\n\n</script>";
+		$data['extraHeadContent'] .= "<script type=\"text/javascript\">\nvar taxable = ".$taxable.";\nvar tax1_rate = ". $data['row']->tax1_rate .";\nvar tax2_rate = ". $data['row']->tax2_rate .";\nvar datePicker1 = \"".date("Y-m-d")."\";\nvar datePicker2 = \"".date("F j, Y")."\";\nvar tax1_default = ".$data['tax1_def']  .";\nvar tax2_default = ".$data['tax2_def']  .";\nvar tax1_descr = '".$data['row']->tax1_desc."';\nvar tax2_descr = '".$data['row']->tax2_desc."';\nvar tax0_descr = '".$this->lang->line('invoice_tax0_desc')."';\n\n</script>";
 // end new code;
 // END PATCH
+
 		$data['extraHeadContent'] .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"". base_url()."css/invoice.css\" />\n";
 		$data['extraHeadContent'] .= "<script type=\"text/javascript\" src=\"". base_url()."js/createinvoice.js\"></script>\n";
 		$data['extraHeadContent'] .= js_calendar_script('my_form');
@@ -573,8 +581,21 @@ function String_Increment($string, $increment=1, $forbidden=array()) {
 
 		$last_invoice_number = $this->invoices_model->lastInvoiceNumber($id);
 		($last_invoice_number != '') ? $data['lastInvoiceNumber'] = $last_invoice_number : $data['lastInvoiceNumber'] = '';
-		$data['invoice_number'] = (is_numeric($last_invoice_number)) ? $last_invoice_number+1 : '';
 		$data['last_number_suggestion'] = '('.$this->lang->line('invoice_last_used').' '.$last_invoice_number.')';
+
+		if (is_numeric($last_invoice_number)) {
+			$data['invoice_number'] = $last_invoice_number+1;
+		} else {
+			$string = $last_invoice_number;
+			$regex = "(_?)([1-9]+)$";
+
+			ereg($regex, $string, $regs);
+			$z = empty($regs) ? '' : $regs[2];
+			$new = ((int) $z) + 1;
+
+			$string =  ereg_replace((($z=='') ? "$" : $regs[0]."$"), ((string) $regs[1]).((string) $new), $string);
+			$data['invoice_number'] = $string;
+		}
 
 		$data['page_title'] = $this->lang->line('menu_duplicate_invoice');
 		$data['button_label'] = 'actions_create_invoice';
