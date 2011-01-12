@@ -22,13 +22,15 @@
 
 body {
 	margin: 0.5in;
+	font-family: Helvetica;
+	font-size: 8pt;
 }
 h1, h2, h3, h4, h5, h6, li, blockquote, p, th, td {
-	font-family: Helvetica, Arial, Verdana, sans-serif; /*Trebuchet MS,*/
+	font-family: Helvetica;
 }
 h1, h2, h3, h4 {
 	color: #5E88B6;
-	font-weight: normal;
+	font-weight: bold;
 }
 h4, h5, h6 {
 	color: #5E88B6;
@@ -50,13 +52,16 @@ table {
 	width: 100%;
 }
 td p {
-	font-size: small;
+	font-family: Helvetica;
+	font-size: 8pt;
+	font-weight: bold;
 	margin: 0;
 }
 th {
 	color: #FFF;
 	text-align: left;
 	background-color:#000000;
+	font-size: 8pt;
 }
 .bamboo_invoice_bam {
 	color: #5E88B6;
@@ -70,8 +75,8 @@ th {
 }
 #footer {
 	border-top: 1px solid #CCC;
-	text-align: right;
-	font-size: 6pt;
+	text-align: left;
+	font-size: 7pt;
 	color: #999999;
 }
 #footer a {
@@ -81,9 +86,11 @@ th {
 table.stripe {
 	border-collapse: collapse;
 	page-break-after: auto;
+	font-size: 8pt;
 }
 table.stripe td {
-	border-bottom: 1pt solid black;
+	font-weight: normal;
+	font-size: 8pt;
 }
 </style>
 </head>
@@ -91,70 +98,57 @@ table.stripe td {
 
 	<table>
 		<tr>
-			<td width="60%">
-				<p>
-					<strong>
-						<?php echo $this->lang->line('invoice_invoice');?> <?php echo $row->invoice_number;?><br />
-						<?php echo $date_invoice_issued;?>
-					</strong>
-				</p>
-			</td>
-			<td>
-
-				<h2>
-					<?php if (isset($company_logo)) {echo $company_logo.'<br />';}?>
-					<?php echo $companyInfo->company_name;?> 
-					<span><?php echo $this->lang->line('invoice_invoice');?></span>
-				</h2>
+			<td width="65%">
+				<?php if (isset($company_logo)) {echo $company_logo.'<br /><br />';}?>
 
 				<p>
-					<?php echo $companyInfo->address1;?>
-					<?php if ($companyInfo->address2 != '') {echo '<br />' . $companyInfo->address2;}?><br />
-					<?php echo $companyInfo->city;?>,
-					<?php echo $companyInfo->province;?><br />
-					<?php echo $companyInfo->country;?> 
-					<?php echo $companyInfo->postal_code;?><br />
+					<?php echo $companyInfo->address1;?><br />
+					<?php echo $companyInfo->postal_code;?> <?php echo $companyInfo->city;?><br />
+					<?php echo $companyInfo->country;?><br />
 					<?php echo auto_link(prep_url($companyInfo->website));?>
 				</p>
 			</td>
+			<td align="right">
+				<h2><span>FACTUUR</span></h2><br /><br />
+				<p>
+					<strong>
+						FACTUURNR: <?php echo $row->invoice_number;?><br />
+						DATUM: <?php echo $date_invoice_issued;?>
+					</strong>
+				</p>
+			<br /><br /><br />
+			<table width="100%" border=0><tr><td align="left">
+			<p ><br /><br /><br />
+			<?php echo $row->name;?><br />
+			<?php if ($row->address1 != '') {echo $row->address1;}?><br />
+			<?php if ($row->postal_code != '') {echo ' ' . $row->postal_code;}?> <?php if ($row->city != '') {echo $row->city;}?><br /><br /><br /><br />
+			<?php if ($row->tax_code != '') {echo $this->lang->line('settings_tax_code').': '.$row->tax_code;}?>
+			</p>
+			
+			</td></tr></table>
+
+			</td>
 		</tr>
 	</table>
-
-	<h3><?php echo $this->lang->line('invoice_bill_to');?>
-		<?php echo $row->name;?>
-	</h3>
-
-	<p>
-		<?php if ($row->address1 != '') {echo $row->address1;}?>
-		<?php if ($row->address2 != '') {echo ', ' . $row->address2;}?>
-		<?php if ($row->address1 != '' || $row->address2 != '') {echo '<br />';}?>
-		<?php if ($row->city != '') {echo $row->city;}?>
-		<?php if ($row->province != '') {if ($row->city != '') {echo ', ';} echo $row->province;}?>
-		<?php if ($row->country != '') {if ($row->province != '' || ($row->province == '' && $row->city != '')){echo ', ';} echo $row->country;}?>
-		<?php if ($row->postal_code != '') {echo ' ' . $row->postal_code;}?>
-		<?php if ($row->city != '' || $row->province != '' || $row->country != '' || $row->postal_code != '') {echo '<br />';}?>
-		<?php echo auto_link(prep_url($row->website));?>
-		<?php if ($row->tax_code != '') {echo '<br />'.$this->lang->line('settings_tax_code').': '.$row->tax_code;}?>
-	</p>
 
 	<table class="invoice_items stripe">
 		<tr>
-			<th><?php echo $this->lang->line('invoice_quantity');?></th>
-			<th><?php echo $this->lang->line('invoice_work_description');?></th>
-			<th><?php echo $this->lang->line('invoice_amount_item');?></th>
-			<th><?php echo $this->lang->line('invoice_total');?></th>
+			<th width="75px" align="center">AANTAL</th>
+			<th>OMSCHRIJVING</th>
+			<th width="75px" align="center">EH PRIJS</th>
+			<th width="75px" align="center">TOTAAL</th>
 		</tr>
 		<?php foreach ($items->result() as $item):?>
 		<tr valign="top">
-			<td><p><?php echo str_replace('.00', '', $item->quantity);?></p></td>
+			<td align="center"><?php echo str_replace('.00', '', $item->quantity);?></td>
 			<td><?php echo nl2br(str_replace(array('\n', '\r'), "\n", $item->work_description));?></td>
-			<td><p><?php echo $this->settings_model->get_setting('currency_symbol') . str_replace('.', $this->config->item('currency_decimal'), $item->amount);?> <?php if ($item->taxable == 0){echo '(' . $this->lang->line('invoice_not_taxable') . ')';}?></p></td>
-			<td><p><?php echo $this->settings_model->get_setting('currency_symbol') . number_format($item->quantity * $item->amount, 2, $this->config->item('currency_decimal'), '');?></p></td>
+			<td align="center"><?php echo $this->settings_model->get_setting('currency_symbol') . str_replace('.', $this->config->item('currency_decimal'), $item->amount);?> <?php if ($item->taxable == 0){echo '(' . $this->lang->line('invoice_not_taxable') . ')';}?></td>
+			<td align="center"><?php echo $this->settings_model->get_setting('currency_symbol') . number_format($item->quantity * $item->amount, 2, $this->config->item('currency_decimal'), '');?></td>
 		</tr>
 		<?php endforeach;?>
 	</table>
-
-	<p>
+	<br /><br /><br />
+	<p align=right>
 		<?php echo $total_no_tax;?>
 		<?php echo $tax_info;?>
 		<?php echo $total_with_tax;?>
@@ -162,14 +156,11 @@ table.stripe td {
 		<?php echo $total_outstanding;?>
 	</p>
 
-	<p>
+	<p style="font-size: 8pt;">
 		<strong><?php echo $this->lang->line('invoice_payment_term');?>: <?php echo $this->settings_model->get_setting('days_payment_due');?> <?php echo $this->lang->line('date_days');?></strong> 
-		(<?php echo $date_invoice_due;?>)
+		(Verval datum: <?php echo $date_invoice_due;?>)
+	<br />
 	</p>
-
-	<?php if ($companyInfo->tax_code != ''):?>
-	<p><?php echo $companyInfo->tax_code;?></p>
-	<?php endif;?>
 
 	<p><?php echo auto_typography($row->invoice_note);?></p>
 
@@ -184,7 +175,7 @@ table.stripe td {
 			<p>
 				<?php echo $this->lang->line('invoice_generated_by');?> 
 				<?php echo $this->lang->line('bambooinvoice_logo');?><br />
-				<a href="http://www.bambooinvoice.org/">http://www.bambooinvoice.org</a>
+				<a href="http://www.bambooinvoice.be/">http://www.bambooinvoice.be</a>
 			</p>
 		<?php endif;?>
 	</div>

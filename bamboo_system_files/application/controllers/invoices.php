@@ -866,12 +866,12 @@ function String_Increment($string, $increment=1, $forbidden=array()) {
 
 		$data['items'] = $this->invoices_model->getInvoiceItems($id);
 
-		$data['total_no_tax'] = $this->settings_model->get_setting('currency_symbol').number_format($data['row']->total_notax, 2, $this->config->item('currency_decimal'), '')."<br />\n";
+		$data['total_no_tax'] = $this->lang->line('invoice_amount').': '.$this->settings_model->get_setting('currency_symbol').number_format($data['row']->total_notax, 2, $this->config->item('currency_decimal'), '')."<br />\n";
 
 		// taxes
 		$data['tax_info'] = $this->_tax_info($data['row']);
 
-		$data['total_with_tax'] = $this->settings_model->get_setting('currency_symbol').number_format($data['row']->total_with_tax, 2, $this->config->item('currency_decimal'), '')."<br />\n";;
+		$data['total_with_tax'] = $this->lang->line('invoice_total').': '.$this->settings_model->get_setting('currency_symbol').number_format($data['row']->total_with_tax, 2, $this->config->item('currency_decimal'), '')."<br />\n";;
 
 		if ($data['row']->amount_paid > 0)
 		{
@@ -1083,12 +1083,12 @@ function String_Increment($string, $increment=1, $forbidden=array()) {
 
 		if ($data->total_tax1 != 0)
 		{
-			$tax_info .= $this->settings_model->get_setting('currency_symbol').number_format($data->total_tax1, 2, $this->config->item('currency_decimal'), '')."<br />\n";
+			$tax_info .= $data->tax1_desc." : ".$this->settings_model->get_setting('currency_symbol').number_format($data->total_tax1, 2, $this->config->item('currency_decimal'), '')."<br />\n";
 		}
 
 		if ($data->total_tax2 != 0)
 		{
-			$tax_info .= $this->settings_model->get_setting('currency_symbol').number_format($data->total_tax2, 2, $this->config->item('currency_decimal'), '')."<br />\n";
+			$tax_info .= $data->tax2_desc." : ".$this->settings_model->get_setting('currency_symbol').number_format($data->total_tax2, 2, $this->config->item('currency_decimal'), '')."<br />\n";
 		}
 
 		return $tax_info;
