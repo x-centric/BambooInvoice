@@ -166,6 +166,15 @@ class Invoices extends MY_Controller {
 	}
 
 	// --------------------------------------------------------------------
+function String_Increment($string, $increment=1, $forbidden=array()) {
+	$regex = "(_?)([1-9]+)$";
+	ereg($regex, $string, $regs);
+	$z = empty($regs) ? '' : $regs[2];
+	$neu = ((int) $z) + $increment;
+	$string =  ereg_replace((($z=='') ? "$" : $regs[0]."$"), ((string) $regs[1]).((string) $neu), $string);
+	if (in_array($string, $forbidden)) $string = String_Increment($string, $increment, $array);
+	return $string;
+}
 
 	function newinvoice()
 	{
@@ -202,7 +211,20 @@ class Invoices extends MY_Controller {
 
 		$last_invoice_number = $this->invoices_model->lastInvoiceNumber($id);
 		($last_invoice_number != '') ? $data['lastInvoiceNumber'] = $last_invoice_number : $data['lastInvoiceNumber'] = '';
-		$data['suggested_invoice_number'] = (is_numeric($last_invoice_number)) ? $last_invoice_number+1 : '';
+		
+		if (is_numeric($last_invoice_number)) {
+			$data['suggested_invoice_number'] = $last_invoice_number+1;
+		} else {
+			$string = $last_invoice_number;
+			$regex = "(_?)([1-9]+)$";
+
+			ereg($regex, $string, $regs);
+			$z = empty($regs) ? '' : $regs[2];
+			$new = ((int) $z) + 1;
+
+			$string =  ereg_replace((($z=='') ? "$" : $regs[0]."$"), ((string) $regs[1]).((string) $new), $string);
+			$data['suggested_invoice_number'] = $string;
+		}		
 
 		$taxable = ($data['row']->tax_status == 1) ? 'true' : 'false';
 
