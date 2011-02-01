@@ -48,7 +48,7 @@ if ($row->amount_paid < $row->total_with_tax):
 			<label>
 				<span><?php echo $this->lang->line('invoice_amount');?></span> 
 				<?php echo $this->settings_model->get_setting('currency_symbol');?> 
-				<input type="text" name="amount" id="amount" maxlength="10" size="10" /> 
+				<input type="text" name="amount" id="amount" maxlength="10" size="10" value="<?php echo $row->total_with_tax; ?>" /> 
 			</label><span id="amountError" class="error"></span>
 		</p>
 
