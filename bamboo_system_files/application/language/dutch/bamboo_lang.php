@@ -264,7 +264,7 @@ $lang['utilities_version_undetermined'] = "Kon geen versie status achterhalen.";
 $lang['menu_did_you_know_quotes'] = array(
 					"BambooINVOICE is uitgebracht onder de GPL license en mag dus GRATIS gebruikt worden.",
 					"BambooINVOICE kan ook worden aangeboden in een gehost pakket, zo moet u nooit rekening houden met backups.",
-					"U kan BambooINVOICE zelf installeren op uw eigen server op pc, of u kan dit laten doe. Meer info: www.bambooinvoice.be",
+					"U kan BambooINVOICE zelf installeren op uw eigen server of pc, of u kan dit laten doen. Meer info: www.bambooinvoice.be",
 					"BambooINVOICE kan volledig worden aangepast zoals u dit wil. Meer info: www.bambooinvoice.be",
 					"Uw instellingen kunnen te allen tijde worden gewijzigd in het &ldquo;instellingen&rdquo; menu.",
 					"U kunt een nieuwe klant aanmaken vanuit het &ldquo;klanten&rdquo; menu, of vlak voordat u een factuur aanmaakt!",
