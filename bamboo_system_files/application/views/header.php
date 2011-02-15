@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 header('HTTP/1.0 200 OK'); // stoopid IIS
 header('Content-Type: text/html; Charset=UTF-8');
 ?>
@@ -120,7 +120,6 @@ lang_amount = new String("<?php echo ($this->lang->line('invoice_amount'));?>");
 				<li id="invemailli"><a class="invemail" href="javascript:void(0);" onclick="Effect.BlindDown('emailInvoice', {duration: '0.4'});"><?php echo $this->lang->line('menu_email_invoice');?></a></li>
 
 				<li><?php echo anchor('invoices/pdf/' . $row->id, $this->lang->line('menu_generate_pdf'), array('class' => 'emailpdf'));?></li>
-				<li id="invprintli"><?php echo anchor('', $this->lang->line('menu_print_invoice'), array('class' => 'invprint', 'onclick' => 'print(); return false;'));?></li>
 
 				<?php if ($row->amount_paid < $row->total_with_tax): ?>
 					<li><?php echo anchor('invoices/edit/'.$row->id, $this->lang->line('menu_edit_invoice'), array('class' => 'invedit'));?></li>
