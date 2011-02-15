@@ -5,7 +5,7 @@ class utilities_model extends Model {
 	{
 		// Not generally a fan of one time use variables, but in this
 		// case I think it helps to keep it at the top of the controller
-		$page_url = 'http://bambooinvoice.org/biversion.txt';
+		$page_url = 'http://bambooinvoice.be/biversion.txt';
 
 		$target = parse_url($page_url);
 
@@ -23,6 +23,7 @@ class utilities_model extends Model {
 			while ( ! feof($fp))
 			{
 				$ver = trim(fgets($fp, 128));
+				
 			}
 
 			// Let's typecast these so there's no funny business going on

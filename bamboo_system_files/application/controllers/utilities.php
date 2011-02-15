@@ -27,7 +27,7 @@ class Utilities extends MY_Controller {
 
 		if ($status == 'new')
 		{
-			$data['message'] = $this->lang->line('utilities_new_version_available') . anchor('http://bambooinvoice.org', 'http://bambooinvoice.org');
+			$data['message'] = $this->lang->line('utilities_new_version_available') . anchor('http://bambooinvoice.be', 'http://bambooinvoice.be');
 		}
 		elseif ($status == 'current')
 		{

@@ -77,6 +77,7 @@ $lang['invoice_amount_numbers_only'] = 'Alleen numerieke gegevens';
 $lang['invoice_amount_paid'] = 'Bedrag betaald'; 
 $lang['invoice_amount_outstanding'] = 'Bedrag openstaand'; 
 $lang['invoice_bill_to'] = '';
+$lang['invoice_blind_copy_me'] = 'Kopie naar mezelf';
 $lang['invoice_client'] = 'Klant';
 $lang['invoice_client_id'] = 'Klant ID';
 $lang['invoice_closed'] = 'Voldaan';
@@ -205,7 +206,7 @@ $lang['menu_roadmap'] = 'Roadmap';
 $lang['menu_root_system'] = 'Hoofdmenu';
 $lang['menu_see_also'] = 'Zie ook';
 $lang['menu_settings'] = 'Instellingen';
-$lang['menu_utilties'] = 'Gereedschap';
+$lang['menu_utilities'] = 'Extra';
 
 $lang['notice_english_only'] = 'Available in English Only'; // to be translated
 $lang['notice_generated_by'] = 'Gemaakt door';
@@ -256,14 +257,16 @@ $lang['utilities_phpinfo'] = 'PHP informatie';
 $lang['utilities_phpinfo_not_available'] = 'Deze optie is niet beschikbaar in de demo.';
 $lang['utilities_new_version_available'] = "Een nieuwe versie van BambooInvoice is beschikbaar. "; // space after period
 $lang['utilities_up_to_date'] = "U gebruikt de meest recente versie van BambooInvoice.";
-$lang['utilities_connection_failed'] = "Kon niet verbinden met http://bambooinvoice.org .";
+$lang['utilities_connection_failed'] = "Kon niet verbinden met http://bambooinvoice.be .";
 $lang['utilities_version_check'] = "Controle voor nieuwe versie";
 $lang['utilities_version_undetermined'] = "Kon geen versie status achterhalen.";
 
 $lang['menu_did_you_know_quotes'] = array(
-					"BambooINVOICE is uitgebracht onder de GPL license.",
+					"BambooINVOICE is uitgebracht onder de GPL license en mag dus GRATIS gebruikt worden.",
+					"BambooINVOICE kan ook worden aangeboden in een gehost pakket, zo moet u nooit rekening houden met backups.",
+					"U kan BambooINVOICE zelf installeren op uw eigen server op pc, of u kan dit laten doe. Meer info: www.bambooinvoice.be",
+					"BambooINVOICE kan volledig worden aangepast zoals u dit wil. Meer info: www.bambooinvoice.be",
 					"Uw instellingen kunnen te allen tijde worden gewijzigd in het &ldquo;instellingen&rdquo; menu.",
-					"Het help bestand is nog groeiende. Bezoek BambooINVOICE.org voor de laatste versie!",
 					"U kunt een nieuwe klant aanmaken vanuit het &ldquo;klanten&rdquo; menu, of vlak voordat u een factuur aanmaakt!",
 					"Een enkele stam bamboe, geplant als klein plantje, bereikt zijn ultieme hoogte in minder dan een jaar!",
 					"De bamboe plant zijn lange leven is in China een symbool voor lang leven. In India is het een symbool voor vriendschap."
