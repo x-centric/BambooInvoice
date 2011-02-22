@@ -393,6 +393,9 @@ function String_Increment($string, $increment=1, $forbidden=array()) {
 		$data['invoiceOptions'] = TRUE; // create invoice options on sidebar
 		$data['company_logo'] = $this->_get_logo();
 		$data['page_title'] = 'Invoice Details';
+		$data['credit'] = false;
+		if ($data['row']->total_notax < 0)
+			$data['credit'] = true;
 
 		$this->load->view('invoices/view', $data);
 	}
@@ -744,6 +747,9 @@ function String_Increment($string, $increment=1, $forbidden=array()) {
 			$data['total_paid'] = '';
 			$data['total_outstanding'] = '';
 		}
+		$data['credit'] = false;
+		if ($data['row']->total_notax < 0)
+			$data['credit'] = true;
 
 		// create and save invoice to temp
 		$html = $this->load->view('invoices/pdf', $data, TRUE);
@@ -883,6 +889,10 @@ function String_Increment($string, $increment=1, $forbidden=array()) {
 			$data['total_paid'] = '';
 			$data['total_outstanding'] = '';
 		}
+
+		$data['credit'] = false;
+		if ($data['row']->total_notax < 0)
+			$data['credit'] = true;
 
 		$html = $this->load->view('invoices/pdf', $data, TRUE);
 		$invoice_localized = url_title(strtolower($this->lang->line('invoice_invoice')));

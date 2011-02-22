@@ -113,7 +113,7 @@ if ($row->amount_paid < $row->total_with_tax):
 		<h2>
 			<?php if (isset($company_logo)) {echo $company_logo.'<br />';}?>
 			<?php echo $companyInfo->company_name;?> 
-			<span><?php echo $this->lang->line('invoice_invoice');?></span>
+			<span><?php echo (!$credit ? $this->lang->line('invoice_invoice'):$this->lang->line('invoice_credit'));?></span>
 		</h2>
 
 		<p>
@@ -132,7 +132,7 @@ if ($row->amount_paid < $row->total_with_tax):
 
 	<p>
 		<strong>
-			<?php echo $this->lang->line('invoice_invoice');?> <?php echo $row->invoice_number;?><br />
+			<?php echo (!$credit ? $this->lang->line('invoice_number'):$this->lang->line('invoice_credit_number'));?> <?php echo $row->invoice_number;?><br />
 			<?php echo $date_invoice_issued;?>
 		</strong>
 	</p>

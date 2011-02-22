@@ -109,11 +109,11 @@ table.stripe td {
 				</p>
 			</td>
 			<td align="right">
-				<h2><span>FACTUUR</span></h2><br /><br />
+				<h2><span><?php echo (!$credit ? $this->lang->line('invoice_invoice'):$this->lang->line('invoice_credit'));?></span></h2><br /><br />
 				<p>
 					<strong>
-						FACTUURNR: <?php echo $row->invoice_number;?><br />
-						DATUM: <?php echo $date_invoice_issued;?>
+						<?php echo (!$credit ? $this->lang->line('invoice_number'):$this->lang->line('invoice_credit_number')) .': '. $row->invoice_number;?>
+						<br>DATUM: <?php echo $date_invoice_issued;?>
 					</strong>
 				</p>
 			<br /><br /><br />
