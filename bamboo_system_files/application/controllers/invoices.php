@@ -216,11 +216,16 @@ function String_Increment($string, $increment=1, $forbidden=array()) {
 			$data['suggested_invoice_number'] = $last_invoice_number+1;
 		} else {
 			$string = $last_invoice_number;
-			$regex = "(_?)([1-9]+)$";
+			$regex = "(_?)([0-9]+)$";
 
 			ereg($regex, $string, $regs);
+			$numlen = strlen($regs[2]);
 			$z = empty($regs) ? '' : $regs[2];
 			$new = ((int) $z) + 1;
+
+			while (strlen($new) < $numlen) {
+				$new = "0" . $new; 
+			}
 
 			$string =  ereg_replace((($z=='') ? "$" : $regs[0]."$"), ((string) $regs[1]).((string) $new), $string);
 			$data['suggested_invoice_number'] = $string;
@@ -590,11 +595,16 @@ function String_Increment($string, $increment=1, $forbidden=array()) {
 			$data['invoice_number'] = $last_invoice_number+1;
 		} else {
 			$string = $last_invoice_number;
-			$regex = "(_?)([1-9]+)$";
+			$regex = "(_?)([0-9]+)$";
 
 			ereg($regex, $string, $regs);
+			$numlen = strlen($regs[2]);
 			$z = empty($regs) ? '' : $regs[2];
 			$new = ((int) $z) + 1;
+			
+			while (strlen($new) < $numlen) {
+				$new = "0" . $new; 
+			}
 
 			$string =  ereg_replace((($z=='') ? "$" : $regs[0]."$"), ((string) $regs[1]).((string) $new), $string);
 			$data['invoice_number'] = $string;
